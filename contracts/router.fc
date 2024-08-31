@@ -1,0 +1,35 @@
+#include "imports/stdlib.fc";
+
+global slice owner_addr;
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    if (in_msg_body.slice_empty?()) { return (); }
+    slice cs = in_msg_full.begin_parse();
+    int flags = cs~load_uint(4);
+    if (flags & 1) { return (); }
+    sender_address = cs~load_msg_addr();
+    int op = in_msg_body~load_uint(32);
+    int query_id = in_msg_body~load_uint(64);
+    load_data();
+    if (op == op::send) {
+        cell send_dict = in_msg_body~load_dict();
+        (int k, slice x, int is?) = send_dict.udict_get_max?(32);
+        for (is?) {
+            is_ton? = x~load_uint(2);
+            if (is_ton?) {
+                slice ton_addr = x~load_msg_addr();
+                int amount = x~load_coins();
+                send_ton();
+            } else {
+                slice jetton_addr = x~load_msg_addr();
+                int amount = x~load_coins();
+                send_jetton();
+            }
+        }
+    }
+
+    if (op == op::claim) {
+
+    }
+
+}
