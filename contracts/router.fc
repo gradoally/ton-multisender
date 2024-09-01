@@ -1,4 +1,5 @@
 #include "imports/stdlib.fc";
+#include "imports/messages.fc";
 
 global slice owner_addr;
 
@@ -16,15 +17,9 @@ global slice owner_addr;
         (int k, slice x, int is?) = send_dict.udict_get_max?(32);
         for (is?) {
             is_ton? = x~load_uint(2);
-            if (is_ton?) {
-                slice ton_addr = x~load_msg_addr();
-                int amount = x~load_coins();
-                send_ton();
-            } else {
-                slice jetton_addr = x~load_msg_addr();
-                int amount = x~load_coins();
-                send_jetton();
-            }
+            slice addr = x~load_msg_addr();
+            int amount = x~load_coins();
+            messages::send_simple(amount, addr, x, NORMAL);
         }
     }
 
