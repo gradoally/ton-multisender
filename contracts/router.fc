@@ -16,15 +16,14 @@ global slice owner_addr;
         cell send_dict = in_msg_body~load_dict();
         (int k, slice x, int is?) = send_dict.udict_get_max?(32);
         for (is?) {
-            is_ton? = x~load_uint(2);
             slice addr = x~load_msg_addr();
             int amount = x~load_coins();
-            messages::send_simple(amount, addr, x, NORMAL);
-        }
-    }
-
+            messages::send_simple(amount, addr, x, NORMAL); } }
     if (op == op::claim) {
-
-    }
-
+        cell claim_dict = in_msg_body~load_dict();
+        (int k, slice x, int is?) = claim_dict.udict_get_max?(32);
+        for (is?) {
+            slice addr = x~load_msg_addr();
+            int amount = x~load_coins();
+            messages::send_simple(amount, addr, x, NORMAL); } }
 }
